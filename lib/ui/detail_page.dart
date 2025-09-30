@@ -12,60 +12,86 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
+    final game = gameList[widget.index];
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order ${gameList[widget.index].gameName}'),
+        title: Text(game.gameName),
         backgroundColor: Colors.deepOrange,
       ),
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            height: 250,
-            width: double.infinity,
-            color: Colors.grey[300],
-            alignment: Alignment.center,
-            child: Image.asset(
-              gameList[widget.index].gameImg,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: 250,
               width: double.infinity,
-              fit: BoxFit.cover,
+              color: Colors.black,
+              child: Image.asset(
+                game.gameImg,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Text(
-                  gameList[widget.index].gameName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  gameList[widget.index].gamePublisher,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  gameList[widget.index].gamePublishDate,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  gameList[widget.index].totalLike.toString(),
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 16),
-                ),
 
-                Text(
-                  gameList[widget.index].gameDesc,
-                  textAlign: TextAlign.justify,
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 4),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    game.gameName,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  Text(
+                    "${game.gamePublisher} - ${game.gamePublishDate}",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color.fromARGB(137, 0, 0, 0),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${game.totalLike} Likes",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      const Icon(
+                        Icons.favorite_border,
+                        size: 18,
+                        color: Colors.black54,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(),
+                  Text(
+                    game.gameDesc,
+                    textAlign: TextAlign.justify,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      height: 1.5,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -3,43 +3,43 @@ import 'package:template_quiz_mobile_si_b/data/game_data.dart';
 import 'package:template_quiz_mobile_si_b/ui/detail_page.dart';
 import 'package:template_quiz_mobile_si_b/ui/login_page.dart';
 
-class HomePage extends StatelessWidget {
+class Homepage extends StatefulWidget {
+  const Homepage({super.key, required this.username});
   final String username;
-  const HomePage({super.key, required this.username});
+
+  @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  TextEditingController searchController = TextEditingController();
+  List gameFilter = gameList;
+
+  void _searchGame(String query) {
+    final hasil = gameList.where((game) {
+      final nama = game.gameName.toLowerCase();
+      final penerbit = game.gamePublisher.toLowerCase();
+      final keyword = query.toLowerCase();
+      return nama.contains(keyword) || penerbit.contains(keyword);
+    }).toList();
+
+    setState(() {
+      gameFilter = hasil;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
         title: const Text(
-          'Game Store',
-          style: const TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 255, 255, 255),
-            letterSpacing: 1.5,
-            wordSpacing: 2,
-          ),
+          'Gamestore',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        centerTitle: true,
+        backgroundColor: Colors.deepOrange,
+        foregroundColor: Colors.white,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.favorite,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.share,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
-          ),
           IconButton(
             onPressed: () {
               Navigator.pushAndRemoveUntil(
@@ -52,52 +52,71 @@ class HomePage extends StatelessWidget {
                 (route) => false,
               );
             },
-            icon: const Icon(
-              Icons.logout,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
+            icon: const Icon(Icons.logout_outlined),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepOrange,
-        onPressed: () {},
-        child: const Icon(
-          Icons.add,
-          color: Color.fromARGB(255, 255, 255, 255),
-          size: 32,
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: Column(
         children: [
-          Text(
-            'Selamat Datang di GameStore, $username',
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              letterSpacing: 1.5,
-              wordSpacing: 2,
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Selamat Datang, ${widget.username}!',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepOrange,
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 20),
+
+          const SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.all(10),
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.8,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12.0,
+              vertical: 6.0,
+            ),
+            child: TextField(
+              controller: searchController,
+              onChanged: _searchGame,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search, color: Colors.deepOrange),
+                filled: true,
+                fillColor: Colors.white,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.deepOrange,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.deepOrange.shade200),
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              itemCount: gameList.length,
-              itemBuilder: (context, index) {
-                return _gameModel(context, index);
-              },
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: GridView.builder(
+                padding: const EdgeInsets.all(8),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.75,
+                ),
+                itemBuilder: (context, index) {
+                  return _gameModel(context, index);
+                },
+                itemCount: gameFilter.length,
+              ),
             ),
           ),
         ],
@@ -117,44 +136,93 @@ class HomePage extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: Colors.deepOrange,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blueGrey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
+      child: Card(
+        elevation: 4,
+        shadowColor: Colors.deepOrange.withOpacity(0.3),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Column(
           children: [
             Expanded(
+              flex: 1,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  gameList[index].gameImg,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(
-                      Icons.broken_image,
-                      size: 50,
-                      color: Colors.grey,
-                    );
-                  },
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(15),
+                ),
+                child: gameFilter[index].gameImg.isNotEmpty
+                    ? Image.asset(
+                        gameFilter[index].gameImg,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const SizedBox.shrink();
+                        },
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      gameFilter[index].gameName,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      gameFilter[index].gamePublisher,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      gameFilter[index].gameDesc,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.black54,
+                      ),
+                      textAlign: TextAlign.justify,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.thumb_up_alt_outlined,
+                          size: 16,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "${gameFilter[index].totalLike}",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            Text("Nama : ${gameList[index].gameName}"),
-            Text("Publish Date : ${gameList[index].gamePublishDate}"),
-            Text("Like :${gameList[index].totalLike} "),
-            Flexible(child: Text("About : ${gameList[index].gameDesc}")),
           ],
         ),
       ),

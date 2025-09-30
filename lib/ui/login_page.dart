@@ -62,19 +62,29 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  bool _obscurePassword = true;
   Widget _passwordField() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: TextFormField(
-        obscureText: true,
+        obscureText: _obscurePassword,
         onChanged: (value) {
           password = value;
         },
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           labelText: 'Password',
-          hint: Text('Enter your password'),
           prefixIcon: Icon(Icons.lock),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+            ),
+            onPressed: () {
+              setState(() {
+                _obscurePassword = !_obscurePassword;
+              });
+            },
+          ),
         ),
       ),
     );
@@ -100,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return HomePage(username: username);
+                  return Homepage(username: username);
                 },
               ),
             );
