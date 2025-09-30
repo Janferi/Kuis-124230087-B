@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         onPressed: () {
           String text = " ";
-          if (username == "fulan" && password == "fulan") {
+          if (username == "kiel" && password == "087") {
             setState(() {
               text = "Login Berhasil";
               isLoginSuccess = true;
